@@ -21,4 +21,4 @@ The paper experiments the with the following three environments:
 ## Soccer
 
 
-[This]() SAC-discrete implementation served as a guide in the process.
+[This](https://github.com/p-christ/Deep-Reinforcement-Learning-Algorithms-with-PyTorch/blob/master/agents/actor_critic_agents/SAC_Discrete.py) SAC-discrete implementation served as a guide in the process.
