@@ -3,6 +3,8 @@ Although I have implemented the algorithm to the best of my knowledge, the corre
 # hybrid-sac
 [cleanRL](https://github.com/vwxyzjn/cleanrl)-style single-file pytorch implementation of hybrid-SAC algorithm from the paper [Discrete and Continuous Action Representation for Practical RL in Video Games](https://arxiv.org/pdf/1912.11077.pdf)
 
+Hybrid-SAC gives systematic modelling of hybrid action spaces (where both discrete and continuous actions are present). For example, the agent might choose from high-level discrete actions (e.g. move, jump, fire), each of these being associated with continuous parameters (e.g. target coordinates for the move action, direction for the jump action,aiming angle for the fire action).
+
 ## Dependencies
 * Requirements for training are same as cleanRL. So `pip install cleanrl` will do.
 * Environments:
@@ -19,6 +21,10 @@ The paper experiments the with the following three environments:
 ## Goal
 
 ## Soccer
+
+## TODOs
+- [ ] Hyperparameter tuning
+- [ ] Collate the three files into one
 
 
 [This](https://github.com/p-christ/Deep-Reinforcement-Learning-Algorithms-with-PyTorch/blob/master/agents/actor_critic_agents/SAC_Discrete.py) SAC-discrete implementation served as a guide in the process.
