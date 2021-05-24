@@ -5,7 +5,10 @@ Although I have implemented the algorithm to the best of my knowledge, the corre
 
 ## Dependencies
 * Requirements for training are same as cleanRL. So `pip install cleanrl` will do.
-* Environments: [platform](https://github.com/cycraig/gym-platform), [goal](https://github.com/cycraig/gym-goal), [soccer](https://github.com/cycraig/gym-soccer)
+* Environments:
+  - [Platform](https://github.com/cycraig/gym-platform): `pip install -e git+https://github.com/cycraig/gym-platform#egg=gym_platform`
+  - [Goal](https://github.com/cycraig/gym-goal): `pip install -e git+https://github.com/cycraig/gym-goal#egg=gym_goal`
+  - [Soccer](https://github.com/cycraig/gym-soccer): `pip install -e git+https://github.com/cycraig/gym-soccer#egg=gym_soccer`
 
 Inspired by cleanRL, this repo gives the single-file implementation of the algorithm. Hence, some funcitonalities (like multi-actor execution) are not possible. Although the training is not as efficient as it could be, it is helpful for understanding the algorithm.
 
