@@ -24,6 +24,10 @@ The paper experiments the with the following three environments:
   - hop(dx)
   - leap(dx)
 * Reward: Based on the distance travelled.
+* To train the agent,
+```bash
+python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50000 --learning-starts 2000 --buffer-size 10000 --policy-lr 3e-4 --q-lr 1e-4
+```
 * After training for 50k steps, the agent learns to travel till the end:
 <p align="center">
   <img src="_data/platform.gif" width="400">
