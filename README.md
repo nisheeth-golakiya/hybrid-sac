@@ -24,6 +24,10 @@ The paper experiments the with the following three environments:
   - hop(dx)
   - leap(dx)
 * Reward: Based on the distance travelled.
+* After training for 50k steps, the agent learns to travel till the end:
+<p align="center">
+  <img src="_data/platform.gif" width="400">
+</p>
 
 ## Goal
 * Task: Kick a ball past the keeper. Episode ends if the ball enters the goals, is captured by the keeper, or leaves the play area.
