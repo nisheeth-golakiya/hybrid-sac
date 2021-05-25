@@ -6,7 +6,7 @@ Although I have implemented the algorithm to the best of my knowledge, the corre
 Hybrid-SAC gives systematic modelling of hybrid action spaces (where both discrete and continuous actions are present). For example, the agent might choose from high-level discrete actions (e.g. move, jump, fire), each of these being associated with continuous parameters (e.g. target coordinates for the move action, direction for the jump action,aiming angle for the fire action).
 
 ## Dependencies
-* Requirements for training are same as cleanRL. So `pip install cleanrl` will do.
+* Requirements for training are same as cleanRL(v0.4.0). So `pip install cleanrl` will do.
 * Environments:
   - [Platform](https://github.com/cycraig/gym-platform): `pip install -e git+https://github.com/cycraig/gym-platform#egg=gym_platform`
   - [Goal](https://github.com/cycraig/gym-goal): `pip install -e git+https://github.com/cycraig/gym-goal#egg=gym_goal`
