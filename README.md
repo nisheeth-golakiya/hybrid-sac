@@ -17,10 +17,31 @@ Inspired by cleanRL, this repo gives the single-file implementation of the algor
 The paper experiments the with the following three environments:
 
 ## Platform
+* Task: To avoid enemies and travel across the platfroms to reach a goal. Episode ends if the agent touches an enemy or falls into a gap between platforms.
+* Observations: 9-dimensional vector containing positions and velocities of the player and the enemies along with the features of the platforms.
+* Actions: 3 discrete actions, each associated with 1D continuous component.
+  - run(dx)
+  - hop(dx)
+  - leap(dx)
+* Reward: Based on the distance travelled.
 
 ## Goal
+* Task: Kick a ball past the keeper. Episode ends if the ball enters the goals, is captured by the keeper, or leaves the play area.
+* Observations: 17-dimensional vector containing positions, velocities, etc of the player, the ball and the goalie.
+* Actions:3 discrete actions, each associated with 2D, 1D and 1D continuous components respectively.
+  - kick-to(x, y)
+  - shoot-goal-left(y)
+  - shoot-goal-right(y)
+* Reward: 50 for goal, `-distance(ball, goal)` otherwise.
 
 ## Soccer
+* Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
+* Observations: 59-dimensional vector containing relative positions and velocities of the player and the ball.
+* Actions: 3 discrete actions, each associated with 2D, 1D and 2D continuous components respectively.
+  - dash(power, angle)
+  - turn(angle)
+  - kick(power, angle)
+* Reward: Informative reward which guides the player to reach the ball and kick the ball towards the goal.
 
 ## TODOs
 - [ ] Hyperparameter tuning
