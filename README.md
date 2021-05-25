@@ -25,6 +25,8 @@ The paper experiments the with the following three environments:
 ## TODOs
 - [ ] Hyperparameter tuning
 - [ ] Collate the three files into one
+- [ ] Add proper inference code to run the trained agent
 
-
-[This](https://github.com/p-christ/Deep-Reinforcement-Learning-Algorithms-with-PyTorch/blob/master/agents/actor_critic_agents/SAC_Discrete.py) SAC-discrete implementation served as a guide in the process.
+## References
+* [This](https://github.com/p-christ/Deep-Reinforcement-Learning-Algorithms-with-PyTorch/blob/master/agents/actor_critic_agents/SAC_Discrete.py) SAC-discrete implementation served as a guide in the process.
+* Wrappers for the environments are taken from [MP-DQN](https://github.com/cycraig/MP-DQN).
