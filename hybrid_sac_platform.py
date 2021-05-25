@@ -417,4 +417,4 @@ writer.close()
 env.close()
 
 # save the policy
-torch.save(pg.state_dict(), 'platform')
+torch.save(pg.state_dict(), 'platform.pth')
