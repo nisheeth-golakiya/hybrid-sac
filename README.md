@@ -34,8 +34,6 @@ python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50
 | :---: | :---: |
 |Behavior of trained agent|Max reward is 1.0|
 
-</br>
-
 ## Goal
 * Task: Kick a ball past the keeper. Episode ends if the ball enters the goals, is captured by the keeper, or leaves the play area.
 * Observations: 17-dimensional vector containing positions, velocities, etc of the player, the ball and the goalie.
@@ -54,8 +52,6 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
 * This agent achives `p_goal` of ~0.2, whereas the paper achives ~0.73. Thus, more training or tuning is required to improve the performance.
-
-</br>
 
 ## Soccer
 * Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
