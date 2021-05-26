@@ -41,6 +41,14 @@ python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50
   - shoot-goal-left(y)
   - shoot-goal-right(y)
 * Reward: 50 for goal, `-distance(ball, goal)` otherwise.
+* To train the agent,
+```bash
+python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --learning-starts 257 --buffer-size 20000 --policy-lr 1e-3 --q-lr 1e-4
+```
+* After training for 50k steps, the agent roughly learns a policy to score a goal:
+<p align="center">
+  <img src="_data/goal.gif" width="200">
+</p>
 
 ## Soccer
 * Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
