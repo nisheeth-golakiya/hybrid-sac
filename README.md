@@ -64,6 +64,7 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
 * Reward: Informative reward which guides the player to reach the ball and kick the ball towards the goal.
 
 ## TODOs
+- [ ] Train soccer environment
 - [ ] Hyperparameter tuning
 - [ ] Collate the three files into one
 - [ ] Center-align the tables
