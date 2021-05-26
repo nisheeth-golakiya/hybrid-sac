@@ -64,6 +64,7 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
 ## TODOs
 - [ ] Hyperparameter tuning
 - [ ] Collate the three files into one
+- [ ] Center-align the tables
 - [ ] Add proper inference code to run the trained agent
 
 ## References
