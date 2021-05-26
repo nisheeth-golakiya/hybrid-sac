@@ -52,6 +52,7 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
 |<img src="_data/goal.gif" width="200">|<img src="_data/goal_prob.png" width="200">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
+* This agent achives `p_goal` of ~0.2, whereas the paper achives ~0.73. Thus, more training or tuning is required to improve the performance.
 
 </br>
 ## Soccer
