@@ -29,9 +29,10 @@ The paper experiments the with the following three environments:
 python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50000 --learning-starts 2000 --buffer-size 10000 --policy-lr 3e-4 --q-lr 1e-4
 ```
 * After training for 50k steps, the agent learns to travel till the end:
-<p align="center">
-  <img src="_data/platform.gif" width="400">
-</p>
+
+| <img src="_data/platform.gif" width="400">|<img src="_data/platform_episode_reward.png" width="250">|
+| :---: | :---: |
+|Behavior of trained agent|Max reward is 1.0|
 
 ## Goal
 * Task: Kick a ball past the keeper. Episode ends if the ball enters the goals, is captured by the keeper, or leaves the play area.
@@ -46,9 +47,10 @@ python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50
 python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --learning-starts 257 --buffer-size 20000 --policy-lr 1e-3 --q-lr 1e-4
 ```
 * After training for 50k steps, the agent roughly learns a policy to score a goal:
-<p align="center">
-  <img src="_data/goal.gif" width="200">
-</p>
+
+|<img src="_data/goal.gif" width="200">|<img src="_data/goal_prob.png" width="200">|
+| :---: | :---: |
+|Behavior of trained agent|Probability of scoring a goal|
 
 ## Soccer
 * Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
