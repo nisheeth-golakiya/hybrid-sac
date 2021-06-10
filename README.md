@@ -65,9 +65,9 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
 ```bash
 python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timesteps 2000000 --learning-starts 257 --buffer-size 200000 --policy-lr 3e-4 --q-lr 1e-4 --batch-size 32
 ```
-* After training for 2M steps, the agent learns to approach the ball and sometimes score:
+* After training for 2M steps, the agent learns to approach the ball and kick it towards the goal:
 
-|<img src="_data/soccer.gif" width="200">|<img src="_data/pgoal_soccer.png" width="200">|
+|<img src="_data/soccer.gif" width="400">|<img src="_data/pgoal_soccer.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
 * The paper achives `p_goal` of ~0.6. More tuning is required to improve the performance.
