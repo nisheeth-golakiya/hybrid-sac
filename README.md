@@ -75,7 +75,7 @@ python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timeste
 ## TODOs
 - [x] Train soccer environment
 - [ ] Hyperparameter tuning
-- [ ] Collate the three files into one
+- [ ] Refactoring
 - [ ] Center-align the tables
 - [ ] Add proper inference code to run the trained agent
 
