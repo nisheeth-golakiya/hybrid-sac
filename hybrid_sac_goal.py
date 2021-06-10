@@ -70,8 +70,8 @@ if __name__ == "__main__":
                         help='automatic tuning of the entropy coefficient.')
 
     # Algorithm specific arguments
-    parser.add_argument('--buffer-size', type=int, default=1000000, help='the replay memory buffer size')
-    parser.add_argument('--gamma', type=float, default=0.99, help='the discount factor gamma')
+    parser.add_argument('--buffer-size', type=int, default=20000, help='the replay memory buffer size')
+    parser.add_argument('--gamma', type=float, default=0.95, help='the discount factor gamma')
     parser.add_argument(
         '--target-network-frequency',
         type=int,
@@ -81,9 +81,9 @@ if __name__ == "__main__":
     parser.add_argument(
         '--batch-size',
         type=int,
-        default=256,  # Worked better in my experiments, still have to do ablation on this. Please remind me
+        default=128,  # Worked better in my experiments, still have to do ablation on this. Please remind me
         help="the batch size of sample from the reply memory")
-    parser.add_argument('--tau', type=float, default=0.005, help="target smoothing coefficient (default: 0.005)")
+    parser.add_argument('--tau', type=float, default=0.001, help="target smoothing coefficient (default: 0.005)")
     parser.add_argument('--alpha', type=float, default=0.2, help="Entropy regularization coefficient.")
     parser.add_argument('--learning-starts', type=int, default=5e3, help="timestep to start learning")
 
@@ -111,6 +111,14 @@ if __name__ == "__main__":
                         nargs='?',
                         choices=['zeros', 'uniform'],
                         help='weight initialization scheme for the neural networks.')
+    parser.add_argument('--ent-c',
+                        default=-0.132,
+                        type=float,
+                        help='target entropy of continuous component.')
+    parser.add_argument('--ent-d',
+                        default=0.2949,
+                        type=float,
+                        help='target entropy of discrete component.')
 
     args = parser.parse_args()
     if not args.seed:
@@ -273,12 +281,12 @@ loss_fn = nn.MSELoss()
 
 # Automatic entropy tuning
 if args.autotune:
-    target_entropy = -0.132
+    target_entropy = args.ent_c
     log_alpha = torch.zeros(1, requires_grad=True, device=device)
     alpha = log_alpha.exp().detach().cpu().item()
     a_optimizer = optim.Adam([log_alpha], lr=1e-4)
 
-    target_entropy_d = 0.2949
+    target_entropy_d = args.ent_d
     log_alpha_d = torch.zeros(1, requires_grad=True, device=device)
     alpha_d = log_alpha_d.exp().detach().cpu().item()
     a_d_optimizer = optim.Adam([log_alpha_d], lr=1e-4)
@@ -290,7 +298,6 @@ else:
 global_episode = 0
 num_goals = 0
 (obs, _), done = env.reset(), False
-obs *= 3.0
 episode_reward, episode_length = 0., 0
 
 
@@ -306,7 +313,6 @@ for global_step in range(1, args.total_timesteps + 1):
 
     # TRY NOT TO MODIFY: execute the game and log data.
     (next_obs, _), reward, done, _ = env.step(action)
-    next_obs *= 3.0
     if int(reward) == 50:
         buf_reward = 3.0
     else:
@@ -353,7 +359,6 @@ for global_step in range(1, args.total_timesteps + 1):
 
                 policy_optimizer.zero_grad()
                 policy_loss.backward()
-                nn.utils.clip_grad_norm_(pg.parameters(), 0.5)
                 policy_optimizer.step()
 
                 if args.autotune:
@@ -364,13 +369,11 @@ for global_step in range(1, args.total_timesteps + 1):
 
                     a_optimizer.zero_grad()
                     alpha_loss.backward()
-                    nn.utils.clip_grad_norm_(log_alpha, 0.5)
                     a_optimizer.step()
                     alpha = log_alpha.exp().item()
 
                     a_d_optimizer.zero_grad()
                     alpha_d_loss.backward()
-                    nn.utils.clip_grad_norm_(log_alpha_d, 0.5)
                     a_d_optimizer.step()
                     alpha_d = log_alpha_d.exp().item()
 
@@ -427,7 +430,6 @@ for global_step in range(1, args.total_timesteps + 1):
         
         # Reseting what need to be
         (obs, _), done = env.reset(), False
-        obs *= 3.0
         episode_reward, episode_length = 0., 0
 
 writer.close()

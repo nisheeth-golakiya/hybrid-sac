@@ -44,14 +44,14 @@ python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50
 * Reward: 50 for goal, `-distance(ball, goal)` otherwise.
 * To train the agent,
 ```bash
-python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --learning-starts 257 --buffer-size 20000 --policy-lr 1e-3 --q-lr 1e-4
+python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 100000 --learning-starts 257
 ```
-* After training for 50k steps, the agent roughly learns a policy to score a goal:
+* After training for 100k steps, the agent roughly learns a policy to score a goal:
 
-|<img src="_data/goal.gif" width="200">|<img src="_data/pgoal_goal.png" width="200">|
+|<img src="_data/goal.gif" width="200">|<img src="_data/pgoal_goal.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
-* This agent achives `p_goal` of ~0.2, whereas the paper achieves ~0.73. Thus, more training or tuning is required to improve the performance.
+* This agent achives `p_goal` of ~0.25, whereas the paper achieves ~0.73. Thus, more training or tuning is required to improve the performance.
 
 ## Soccer
 * Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
