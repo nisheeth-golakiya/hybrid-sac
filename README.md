@@ -48,7 +48,7 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
 ```
 * After training for 50k steps, the agent roughly learns a policy to score a goal:
 
-|<img src="_data/goal.gif" width="200">|<img src="_data/goal_prob.png" width="200">|
+|<img src="_data/goal.gif" width="200">|<img src="_data/pgoal_goal.png" width="200">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
 * This agent achives `p_goal` of ~0.2, whereas the paper achives ~0.73. Thus, more training or tuning is required to improve the performance.
@@ -61,10 +61,19 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 50000 --le
   - turn(angle)
   - kick(power, angle)
 * Reward: Informative reward which guides the player to reach the ball and kick the ball towards the goal.
-* Training is pending for this environment.
+* To train the agent,
+```bash
+python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timesteps 2000000 --learning-starts 257 --buffer-size 200000 --policy-lr 3e-4 --q-lr 1e-4 --batch-size 32
+```
+* After training for 2M steps, the agent learns to approach the ball and sometimes score:
+
+|<img src="_data/soccer.gif" width="200">|<img src="_data/pgoal_soccer.png" width="200">|
+| :---: | :---: |
+|Behavior of trained agent|Probability of scoring a goal|
+* The paper achives `p_goal` of ~0.6. More tuning is required to improve the performance.
 
 ## TODOs
-- [ ] Train soccer environment
+- [x] Train soccer environment
 - [ ] Hyperparameter tuning
 - [ ] Collate the three files into one
 - [ ] Center-align the tables
