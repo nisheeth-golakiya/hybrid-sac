@@ -30,9 +30,6 @@ python hybrid_sac_platform.py --seed 7 --gym-id Platform-v0 --total-timesteps 10
 ```
 * After training for 100k steps (~14k episodes), the agent learns to travel till the end:
 
-| <img src="_data/platform.gif" width="400">|<img src="_data/platform_episode_reward.png" width="250">|
-| :---: | :---: |
-|Behavior of trained agent|Max reward is 1.0|
 
 ## Goal
 * Task: Kick a ball past the keeper. Episode ends if the ball enters the goals, is captured by the keeper, or leaves the play area.
