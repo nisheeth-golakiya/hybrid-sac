@@ -30,7 +30,7 @@ python hybrid_sac_platform.py --seed 7 --gym-id Platform-v0 --total-timesteps 10
 ```
 * After training for 100k steps (~14k episodes), the agent learns to travel till the end:
 
-| <img src="_data/platform.gif" width="400">|<img src="_data/platform_episode_reward.png" width="250">|
+| |<img src="_data/platform_episode_reward.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Max reward is 1.0|
 
