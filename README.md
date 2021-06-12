@@ -48,7 +48,7 @@ python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 100000 --l
 ```
 * After training for 100k steps, the agent roughly learns a policy to score a goal:
 
-|<img src="_data/goal.gif" width="200">|<img src="_data/pgoal_goal.png" width="250">|
+|<img src="_data/goal.gif" width="200">|<img src="_data/goal_pgoal.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
 * This agent achives `p_goal` of ~0.25, whereas the paper achieves ~0.73. Thus, more training or tuning is required to improve the performance.
@@ -67,7 +67,7 @@ python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timeste
 ```
 * After training for 2M steps, the agent learns to approach the ball and kick it towards the goal:
 
-|<img src="_data/soccer.gif" width="400">|<img src="_data/pgoal_soccer.png" width="250">|
+|<img src="_data/soccer.gif" width="400">|<img src="_data/soccer_pgoal.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
 * The paper achieves `p_goal` of ~0.6. More tuning is required to improve the performance.
