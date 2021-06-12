@@ -26,9 +26,9 @@ The paper experiments the with the following three environments:
 * Reward: Based on the distance travelled.
 * To train the agent,
 ```bash
-python hybrid_sac_platform.py --seed 3 --gym-id Platform-v0 --total-timesteps 50000 --learning-starts 2000 --buffer-size 10000 --policy-lr 3e-4 --q-lr 1e-4
+python hybrid_sac_platform.py --seed 7 --gym-id Platform-v0 --total-timesteps 100000 --learning-starts 1000
 ```
-* After training for 50k steps, the agent learns to travel till the end:
+* After training for 100k steps (~14k episodes), the agent learns to travel till the end:
 
 | <img src="_data/platform.gif" width="400">|<img src="_data/platform_episode_reward.png" width="250">|
 | :---: | :---: |

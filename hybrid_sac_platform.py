@@ -70,20 +70,20 @@ if __name__ == "__main__":
                         help='automatic tuning of the entropy coefficient.')
 
     # Algorithm specific arguments
-    parser.add_argument('--buffer-size', type=int, default=1000000, help='the replay memory buffer size')
-    parser.add_argument('--gamma', type=float, default=0.99, help='the discount factor gamma')
+    parser.add_argument('--buffer-size', type=int, default=10000, help='the replay memory buffer size')
+    parser.add_argument('--gamma', type=float, default=0.9, help='the discount factor gamma')
     parser.add_argument(
         '--target-network-frequency',
         type=int,
         default=1,  # Denis Yarats' implementation delays this by 2.
         help="the timesteps it takes to update the target network")
-    parser.add_argument('--max-grad-norm', type=float, default=0.5, help='the maximum norm for the gradient clipping')
+    parser.add_argument('--max-grad-norm', type=float, default=10.0, help='the maximum norm for the gradient clipping')
     parser.add_argument(
         '--batch-size',
         type=int,
-        default=256,  # Worked better in my experiments, still have to do ablation on this. Please remind me
+        default=128,  # Worked better in my experiments, still have to do ablation on this. Please remind me
         help="the batch size of sample from the reply memory")
-    parser.add_argument('--tau', type=float, default=0.005, help="target smoothing coefficient (default: 0.005)")
+    parser.add_argument('--tau', type=float, default=0.1, help="target smoothing coefficient (default: 0.005)")
     parser.add_argument('--alpha', type=float, default=0.2, help="Entropy regularization coefficient.")
     parser.add_argument('--learning-starts', type=int, default=5e3, help="timestep to start learning")
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     ## Separating the learning rate of the policy and value commonly seen: (Original implementation, Denis Yarats)
     parser.add_argument('--policy-lr',
                         type=float,
-                        default=3e-4,
+                        default=1e-4,
                         help='the learning rate of the policy network optimizer')
     parser.add_argument('--q-lr', type=float, default=1e-3, help='the learning rate of the Q network network optimizer')
     parser.add_argument('--policy-frequency',
@@ -111,6 +111,14 @@ if __name__ == "__main__":
                         nargs='?',
                         choices=['zeros', 'uniform'],
                         help='weight initialization scheme for the neural networks.')
+    parser.add_argument('--ent-c',
+                        default=-0.25,
+                        type=float,
+                        help='target entropy of continuous component.')
+    parser.add_argument('--ent-d',
+                        default=0.25,
+                        type=float,
+                        help='target entropy of discrete component.')
 
     args = parser.parse_args()
     if not args.seed:
@@ -152,7 +160,7 @@ if args.capture_video:
 
 # ALGO LOGIC: initialize agent here:
 LOG_STD_MAX = 0.0
-LOG_STD_MIN = -2.0
+LOG_STD_MIN = -3.0
 
 
 def layer_init(layer, weight_gain=1, bias_const=0):
@@ -168,7 +176,7 @@ def layer_init(layer, weight_gain=1, bias_const=0):
 class Policy(nn.Module):
     def __init__(self, input_shape, out_c, out_d, env):
         super(Policy, self).__init__()
-        self.fc1 = nn.Linear(input_shape, 128)
+        self.fc1 = nn.Linear(input_shape, 128)  # Better result with slightly wider networks.
         self.mean = nn.Linear(128, out_c)
         self.logstd = nn.Linear(128, out_c)
         self.pi_d = nn.Linear(128, out_d)
@@ -189,15 +197,12 @@ class Policy(nn.Module):
     def get_action(self, x, device):
         mean, log_std, pi_d = self.forward(x, device)
         std = log_std.exp()
-        
-        # sample continuous actions
         normal = Normal(mean, std)
         x_t = normal.rsample()  # for reparameterization trick (mean + std * N(0,1))
         action_c = torch.tanh(x_t)
         log_prob_c = normal.log_prob(x_t)
-        log_prob_c -= torch.log(1.0 - action_c.pow(2) + 1e-6)
+        log_prob_c -= torch.log(1.0 - action_c.pow(2) + 1e-8)
 
-        # sample discrete action
         dist = Categorical(logits=pi_d)
         action_d = dist.sample()
         prob_d = dist.probs
@@ -208,24 +213,18 @@ class Policy(nn.Module):
     def to(self, device):
         return super(Policy, self).to(device)
 
-class Linear0(nn.Linear):
-    def reset_parameters(self):
-        nn.init.constant_(self.weight, 0.0)
-        if self.bias is not None:
-            nn.init.constant_(self.bias, 0.0)
-
 class SoftQNetwork(nn.Module):
     def __init__(self, input_shape, out_c, out_d, layer_init):
         super(SoftQNetwork, self).__init__()
         self.fc1 = nn.Linear(input_shape + out_c, 128)
-        self.fc3 = nn.Linear(128, out_d)
+        self.fc2 = nn.Linear(128, out_d)
         self.apply(layer_init)
 
     def forward(self, x, a, device):
         x = torch.Tensor(x).to(device)
         x = torch.cat([x, a], 1)
         x = F.relu(self.fc1(x))
-        x = self.fc3(x)
+        x = self.fc2(x)
         return x
 
 
@@ -268,13 +267,14 @@ loss_fn = nn.MSELoss()
 
 # Automatic entropy tuning
 if args.autotune:
-    target_entropy = -1.0
+    # target_entropy = -float(out_c)
+    target_entropy = args.ent_c
     log_alpha = torch.zeros(1, requires_grad=True, device=device)
     alpha = log_alpha.exp().detach().cpu().item()
     a_optimizer = optim.Adam([log_alpha], lr=1e-4)
 
     # target_entropy_d = -0.98 * np.log(1/out_d)
-    target_entropy_d = 0.5
+    target_entropy_d = args.ent_d
     log_alpha_d = torch.zeros(1, requires_grad=True, device=device)
     alpha_d = log_alpha_d.exp().detach().cpu().item()
     a_d_optimizer = optim.Adam([log_alpha_d], lr=1e-4)
@@ -285,7 +285,6 @@ else:
 # TRY NOT TO MODIFY: start the game
 global_episode = 0
 (obs, _), done = env.reset(), False
-obs *= 5.0
 episode_reward, episode_length = 0., 0
 
 for global_step in range(1, args.total_timesteps + 1):
@@ -300,8 +299,7 @@ for global_step in range(1, args.total_timesteps + 1):
 
     # TRY NOT TO MODIFY: execute the game and log data.
     (next_obs, _), reward, done, _ = env.step(action)
-    next_obs *= 5.0
-    rb.put((obs, gym_to_buffer(action), reward*10.0-1.0, next_obs, done))
+    rb.put((obs, gym_to_buffer(action), reward, next_obs, done))
     episode_reward += reward
     episode_length += 1
     obs = np.array(next_obs)
@@ -343,24 +341,21 @@ for global_step in range(1, args.total_timesteps + 1):
 
                 policy_optimizer.zero_grad()
                 policy_loss.backward()
-                nn.utils.clip_grad_norm_(pg.parameters(), 0.5)
                 policy_optimizer.step()
 
                 if args.autotune:
                     with torch.no_grad():
                         a_c, a_d, lpi_c, lpi_d, p_d = pg.get_action(s_obs, device)
-                    alpha_loss = (-log_alpha * p_d * ( p_d * lpi_c + target_entropy)).sum(1).mean()
+                    alpha_loss = (-log_alpha * p_d * (p_d * lpi_c + target_entropy)).sum(1).mean()
                     alpha_d_loss = (-log_alpha_d * p_d * (lpi_d + target_entropy_d)).sum(1).mean()
 
                     a_optimizer.zero_grad()
                     alpha_loss.backward()
-                    nn.utils.clip_grad_norm_(log_alpha, 0.5)
                     a_optimizer.step()
                     alpha = log_alpha.exp().detach().cpu().item()
 
                     a_d_optimizer.zero_grad()
                     alpha_d_loss.backward()
-                    nn.utils.clip_grad_norm_(log_alpha_d, 0.5)
                     a_d_optimizer.step()
                     alpha_d = log_alpha_d.exp().detach().cpu().item()
 
@@ -410,7 +405,6 @@ for global_step in range(1, args.total_timesteps + 1):
 
         # Reseting what need to be
         (obs, _), done = env.reset(), False
-        obs *= 5.0
         episode_reward, episode_length = 0., 0
 
 writer.close()
