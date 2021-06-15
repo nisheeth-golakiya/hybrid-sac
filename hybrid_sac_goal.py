@@ -83,7 +83,7 @@ if __name__ == "__main__":
         type=int,
         default=128,  # Worked better in my experiments, still have to do ablation on this. Please remind me
         help="the batch size of sample from the reply memory")
-    parser.add_argument('--tau', type=float, default=0.001, help="target smoothing coefficient (default: 0.005)")
+    parser.add_argument('--tau', type=float, default=0.0004, help="target smoothing coefficient (default: 0.005)")
     parser.add_argument('--alpha', type=float, default=0.2, help="Entropy regularization coefficient.")
     parser.add_argument('--learning-starts', type=int, default=5e3, help="timestep to start learning")
 
@@ -91,7 +91,7 @@ if __name__ == "__main__":
     ## Separating the learning rate of the policy and value commonly seen: (Original implementation, Denis Yarats)
     parser.add_argument('--policy-lr',
                         type=float,
-                        default=3e-4,
+                        default=1e-4,
                         help='the learning rate of the policy network optimizer')
     parser.add_argument('--q-lr', type=float, default=1e-3, help='the learning rate of the Q network network optimizer')
     parser.add_argument('--policy-frequency',
@@ -112,11 +112,11 @@ if __name__ == "__main__":
                         choices=['zeros', 'uniform'],
                         help='weight initialization scheme for the neural networks.')
     parser.add_argument('--ent-c',
-                        default=-0.132,
+                        default=-0.99,
                         type=float,
                         help='target entropy of continuous component.')
     parser.add_argument('--ent-d',
-                        default=0.2949,
+                        default=0.3349,
                         type=float,
                         help='target entropy of discrete component.')
 
@@ -142,7 +142,6 @@ if args.prod_mode:
 
 # TRY NOT TO MODIFY: seeding
 device = torch.device('cuda' if torch.cuda.is_available() and args.cuda else 'cpu')
-# device = "cpu"
 env = gym.make('Goal-v0')
 env = GoalObservationWrapper(env)
 env = GoalFlattenedActionWrapper(env)
@@ -163,7 +162,7 @@ if args.capture_video:
 
 # ALGO LOGIC: initialize agent here:
 LOG_STD_MAX = 0.0
-LOG_STD_MIN = -3.0
+LOG_STD_MIN = -5.0
 
 
 def layer_init(layer, weight_gain=1, bias_const=0):
@@ -207,13 +206,13 @@ class Policy(nn.Module):
         x_t = normal.rsample()  # for reparameterization trick (mean + std * N(0,1))
         action_c = torch.tanh(x_t)
         all_log_prob_c = normal.log_prob(x_t)
-        all_log_prob_c -= torch.log(1.0 - action_c.pow(2) + 1e-6)
+        all_log_prob_c -= torch.log(1.0 - action_c.pow(2) + 1e-8)
         log_prob_c = torch.cat([all_log_prob_c[:, :2].sum(1, keepdim=True), all_log_prob_c[:, 2:]], 1)
 
         dist = Categorical(logits=pi_d)
         action_d = dist.sample()
         prob_d = dist.probs
-        log_prob_d = torch.log(prob_d + 1e-6)
+        log_prob_d = torch.log(prob_d + 1e-8)
 
         return action_c, action_d, log_prob_c, log_prob_d, prob_d
 
@@ -230,15 +229,14 @@ class SoftQNetwork(nn.Module):
     def __init__(self, input_shape, out_c, out_d, layer_init):
         super(SoftQNetwork, self).__init__()
         self.fc1 = nn.Linear(input_shape + out_c, 256)
-        self.fc2 = nn.Linear(128, 128)
-        self.fc3 = nn.Linear(256, out_d)
+        self.fc2 = nn.Linear(256, out_d)
         self.apply(layer_init)
 
     def forward(self, x, a, device):
         x = torch.Tensor(x).to(device)
         x = torch.cat([x, a], 1)
         x = torch.relu(self.fc1(x))
-        x = self.fc3(x)
+        x = self.fc2(x)
         return x
 
 
@@ -435,5 +433,4 @@ for global_step in range(1, args.total_timesteps + 1):
 writer.close()
 env.close()
 
-# save the model
 torch.save(pg.state_dict(), 'goal.pth')
