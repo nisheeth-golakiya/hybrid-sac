@@ -44,9 +44,9 @@ python hybrid_sac_platform.py --seed 7 --gym-id Platform-v0 --total-timesteps 10
 * Reward: 50 for goal, `-distance(ball, goal)` otherwise.
 * To train the agent,
 ```bash
-python hybrid_sac_goal.py --seed 2 --gym-id Goal-v0 --total-timesteps 100000 --learning-starts 257
+python hybrid_sac_goal.py --seed 74 --gym-id Goal-v0 --total-timesteps 200000 --learning-starts 257
 ```
-* After training for 100k steps, the agent roughly learns a policy to score a goal:
+* After training for 200k steps, the agent roughly learns a policy to score a goal:
 
 |<img src="_data/goal.gif" width="200">|<img src="_data/goal_pgoal.png" width="250">|
 | :---: | :---: |
