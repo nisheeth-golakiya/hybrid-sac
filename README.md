@@ -46,7 +46,7 @@ python hybrid_sac_platform.py --seed 7 --gym-id Platform-v0 --total-timesteps 10
 ```bash
 python hybrid_sac_goal.py --seed 74 --gym-id Goal-v0 --total-timesteps 200000 --learning-starts 257
 ```
-* After training for 200k steps, the agent roughly learns a policy to score a goal:
+* After training for 200k steps (~82k episodes), the agent roughly learns a policy to score a goal:
 
 |<img src="_data/goal.gif" width="200">|<img src="_data/goal_pgoal.png" width="250">|
 | :---: | :---: |
