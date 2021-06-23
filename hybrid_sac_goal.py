@@ -83,7 +83,7 @@ if __name__ == "__main__":
         type=int,
         default=128,  # Worked better in my experiments, still have to do ablation on this. Please remind me
         help="the batch size of sample from the reply memory")
-    parser.add_argument('--tau', type=float, default=0.0004, help="target smoothing coefficient (default: 0.005)")
+    parser.add_argument('--tau', type=float, default=0.1, help="target smoothing coefficient (default: 0.005)")
     parser.add_argument('--alpha', type=float, default=0.2, help="Entropy regularization coefficient.")
     parser.add_argument('--learning-starts', type=int, default=5e3, help="timestep to start learning")
 
@@ -100,10 +100,10 @@ if __name__ == "__main__":
                         help='delays the update of the actor, as per the TD3 paper.')
     # NN Parameterization
     parser.add_argument('--weights-init',
-                        default='xavier',
-                        const='xavier',
+                        default='kaiming',
+                        const='kaiming',
                         nargs='?',
-                        choices=['xavier', "orthogonal", 'uniform'],
+                        choices=['xavier', "orthogonal", 'uniform', 'kaiming'],
                         help='weight initialization scheme for the neural networks.')
     parser.add_argument('--bias-init',
                         default='zeros',
@@ -116,7 +116,7 @@ if __name__ == "__main__":
                         type=float,
                         help='target entropy of continuous component.')
     parser.add_argument('--ent-d',
-                        default=0.3349,
+                        default=0.1498,
                         type=float,
                         help='target entropy of discrete component.')
 
@@ -171,6 +171,8 @@ def layer_init(layer, weight_gain=1, bias_const=0):
             torch.nn.init.xavier_uniform_(layer.weight, gain=weight_gain)
         elif args.weights_init == "orthogonal":
             torch.nn.init.orthogonal_(layer.weight, gain=weight_gain)
+        elif args.weights_init == "kaiming":
+            nn.init.kaiming_normal_(layer.weight, nonlinearity='relu')
         if args.bias_init == "zeros":
             torch.nn.init.constant_(layer.bias, bias_const)
 
@@ -311,11 +313,7 @@ for global_step in range(1, args.total_timesteps + 1):
 
     # TRY NOT TO MODIFY: execute the game and log data.
     (next_obs, _), reward, done, _ = env.step(action)
-    if int(reward) == 50:
-        buf_reward = 3.0
-    else:
-        buf_reward = reward / 4.0
-    rb.put((obs, gym_to_buffer(action), buf_reward, next_obs, done))
+    rb.put((obs, gym_to_buffer(action), reward/50.0, next_obs, done))
     episode_reward += reward
     episode_length += 1
     obs = np.array(next_obs)

@@ -51,7 +51,7 @@ python hybrid_sac_goal.py --seed 74 --gym-id Goal-v0 --total-timesteps 200000 --
 |<img src="_data/goal.gif" width="200">|<img src="_data/goal_pgoal.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
-* This agent achives `p_goal` of ~0.4, whereas the paper achieves ~0.73. Thus, more training or tuning is required to improve the performance.
+* This agent achives `p_goal` of ~0.5, whereas the paper achieves ~0.73. Thus, more training or tuning is required to improve the performance.
 
 ## Soccer
 * Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
