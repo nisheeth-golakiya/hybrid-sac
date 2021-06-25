@@ -51,7 +51,7 @@ python hybrid_sac_goal.py --seed 74 --gym-id Goal-v0 --total-timesteps 200000 --
 |<img src="_data/goal.gif" width="200">|<img src="_data/goal_pgoal.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
-* This agent achives `p_goal` of ~0.5, whereas the paper achieves ~0.73. Thus, more training or tuning is required to improve the performance.
+* This agent achives `p_goal` of ~0.5, whereas the paper achieves ~0.73. Thus, more tuning is required to match the performance.
 
 ## Soccer
 * Task: Score a goal. Episode ends if the ball leaves the play area or enters the goal area.
@@ -63,14 +63,14 @@ python hybrid_sac_goal.py --seed 74 --gym-id Goal-v0 --total-timesteps 200000 --
 * Reward: Informative reward which guides the player to reach the ball and kick the ball towards the goal.
 * To train the agent,
 ```bash
-python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timesteps 2000000 --learning-starts 257 
+python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timesteps 3500000 --learning-starts 257 
 ```
-* After training for 2M steps, the agent learns to approach the ball and kick it towards the goal:
+* After training for 3.5M steps (~28k episodes), the agent learns to approach the ball and kick it towards the goal:
 
 |<img src="_data/soccer.gif" width="400">|<img src="_data/soccer_pgoal.png" width="250">|
 | :---: | :---: |
 |Behavior of trained agent|Probability of scoring a goal|
-* The paper achieves `p_goal` of ~0.6. More tuning is required to improve the performance.
+* The paper achieves `p_goal` of ~0.6. More tuning is required to match the performance.
 
 ## TODOs
 - [x] Train soccer environment
