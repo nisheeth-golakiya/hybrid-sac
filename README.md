@@ -63,7 +63,7 @@ python hybrid_sac_goal.py --seed 74 --gym-id Goal-v0 --total-timesteps 200000 --
 * Reward: Informative reward which guides the player to reach the ball and kick the ball towards the goal.
 * To train the agent,
 ```bash
-python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timesteps 2000000 --learning-starts 257 --buffer-size 200000 --policy-lr 3e-4 --q-lr 1e-4 --batch-size 32
+python hybrid_sac_soccer.py --seed 2 --gym-id SoccerScoreGoal-v0 --total-timesteps 2000000 --learning-starts 257 
 ```
 * After training for 2M steps, the agent learns to approach the ball and kick it towards the goal:
 

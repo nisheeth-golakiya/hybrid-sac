@@ -73,7 +73,7 @@ if __name__ == "__main__":
                         help='automatic tuning of the entropy coefficient.')
 
     # Algorithm specific arguments
-    parser.add_argument('--buffer-size', type=int, default=1000000, help='the replay memory buffer size')
+    parser.add_argument('--buffer-size', type=int, default=200000, help='the replay memory buffer size')
     parser.add_argument('--gamma', type=float, default=0.99, help='the discount factor gamma')
     parser.add_argument(
         '--target-network-frequency',
@@ -84,7 +84,7 @@ if __name__ == "__main__":
     parser.add_argument(
         '--batch-size',
         type=int,
-        default=256,  # Worked better in my experiments, still have to do ablation on this. Please remind me
+        default=32,  # Worked better in my experiments, still have to do ablation on this. Please remind me
         help="the batch size of sample from the reply memory")
     parser.add_argument('--tau', type=float, default=0.005, help="target smoothing coefficient (default: 0.005)")
     parser.add_argument('--alpha', type=float, default=0.2, help="Entropy regularization coefficient.")
@@ -96,7 +96,7 @@ if __name__ == "__main__":
                         type=float,
                         default=3e-4,
                         help='the learning rate of the policy network optimizer')
-    parser.add_argument('--q-lr', type=float, default=1e-3, help='the learning rate of the Q network network optimizer')
+    parser.add_argument('--q-lr', type=float, default=1e-4, help='the learning rate of the Q network network optimizer')
     parser.add_argument('--policy-frequency',
                         type=int,
                         default=1,
@@ -443,10 +443,9 @@ for global_step in range(1, args.total_timesteps + 1):
         obs, done = env.reset(), False
         obs *= 1.0
         episode_reward, episode_length = 0., 0
-
-    # save model periodically
-    if global_step % 100000 == 0:
-        torch.save(pg.state_dict(), f'soccer_{global_step}.pth')
+        
 
 writer.close()
 env.close()
+
+torch.save(pg.state_dict(), 'soccer.pth')
